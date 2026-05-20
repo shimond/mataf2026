@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="OOP2/OOP2.csproj" />
+  <Project Path="OOp3/OOp3.csproj" />
+  <Project Path="WorkersApp/WorkersApp.csproj" Id="9b20d21a-543a-45df-8bfe-0b9d23865719" />
+</Solution>

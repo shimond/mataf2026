@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ADO_Basics/ADO_Basics.csproj" />
+  <Project Path="ExeptionHandleEx/ExeptionHandleEx.csproj" />
+</Solution>
