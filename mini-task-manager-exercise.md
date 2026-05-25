@@ -6,8 +6,8 @@ Goal: build a simple ASP.NET Core Web API without a database.
 
 Use only:
 
-- In-memory collections (`List`, `Dictionary`, etc.)
-- Controllers
+- In-memory collections (`List`, etc.)
+- MinimalApi
 - Services
 - Basic validation
 
