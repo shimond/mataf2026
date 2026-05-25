@@ -131,7 +131,7 @@ Returns:
 # Suggested Structure
 
 ```text
-Controllers/
+Endpoints/
 Services/
 Models/
 DTOs/
