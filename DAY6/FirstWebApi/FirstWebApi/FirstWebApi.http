@@ -1,0 +1,26 @@
+@FirstWebApi_HostAddress = http://localhost:5266
+
+GET {{FirstWebApi_HostAddress}}/add/49/100
+
+###
+
+GET {{FirstWebApi_HostAddress}}/random
+
+###
+
+GET {{FirstWebApi_HostAddress}}/random?min=1000&max=1050
+
+###
+
+
+GET {{FirstWebApi_HostAddress}}/countDuplicates?name=shimon&name=david&name=Naama
+
+###
+
+POST {{FirstWebApi_HostAddress}}/addNewPerson
+Content-Type: application/json
+
+{
+    "name": "David",
+    "email": "ShimonD@any-techs.co.il"
+}
