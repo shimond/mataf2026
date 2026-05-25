@@ -71,11 +71,17 @@ namespace EmployeeApp.Endpoints
     }
 }
 
-
+// Configuartion
 // Validation
 // Task - Async/Await
 // Mapping
 // Real implemenation
 // Middleware
+// BFF
+// AI
+
+
+
+
 
 
