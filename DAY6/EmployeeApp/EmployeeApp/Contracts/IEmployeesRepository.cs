@@ -4,11 +4,13 @@ namespace EmployeeApp.Contracts
 {
     public interface IEmployeesRepository
     {
-        List<Employee> Search(string name);
-        Employee AddNewEmployee(Employee employee);
-        Employee? GetEmpolyeeById(int id);
-        List<Employee> GetAllEmployees();
-        Employee UpdateEmployee(Employee employee);
-        void DeleteEmployee(int id);
+        Task<List<Employee>> Search(string name);
+        Task<Employee> AddNewEmployee(Employee employee);
+        Task<Employee?> GetEmpolyeeById(int id);
+        Task<List<Employee>> GetAllEmployees(); //  List<Employee> - > Task<List<Employee>> 
+        Task<Employee> UpdateEmployee(Employee employee);
+        Task DeleteEmployee(int id);
     }
 }
+
+// await Task, ValueTask, Task<>, ValueTask<>

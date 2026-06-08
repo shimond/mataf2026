@@ -16,12 +16,22 @@ namespace EmployeeApp.Controllers
         public EmployeesController(IEmployeesRepository employeesRepository)
         {
             this.employeesRepository = employeesRepository;
+            //this.employeesRepository.GetAllEmployees().Wait();
+            var all = this.employeesRepository.GetAllEmployees().Result;
         }
 
         [HttpGet("{id}")] //api/employees/3
-        public Results<NotFound<string>, Ok<Employee>> GetEmployeeById(int id)
+        public async Task<Results<NotFound<string>, Ok<Employee>>> GetEmployeeById(int id)
         {
-            var result = employeesRepository.GetEmpolyeeById(id);
+            //פקיד מחכה לסוף פעולה
+            //employeesRepository.GetEmpolyeeById(id).Wait();
+
+            //פקיד משוחרר לעשות מה שבא לו שהפעולה תסתיים הוא או פקיד אחד ימשיך את הפעולה
+            //await employeesRepository.GetEmpolyeeById(id);
+
+            // Task is promise in js/ts
+
+            var result = await employeesRepository.GetEmpolyeeById(id);
             if (result is not null)
             {
                 return TypedResults.Ok(result); // status code 200
@@ -30,9 +40,9 @@ namespace EmployeeApp.Controllers
         }
 
         [HttpGet()]
-        public Ok<List<EmployeeDto>> GetAll()
+        public async Task<Ok<List<EmployeeDto>>> GetAll()
         {
-            var result = employeesRepository.GetAllEmployees();
+            var result = await employeesRepository.GetAllEmployees();
             List<EmployeeDto> list = new List<EmployeeDto>();
             foreach (var emp in result)
             {

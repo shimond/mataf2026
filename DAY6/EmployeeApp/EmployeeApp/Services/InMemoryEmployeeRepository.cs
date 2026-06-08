@@ -21,40 +21,45 @@ namespace EmployeeApp.Services
             _employees.Add(new Employee { Id = 9, FirstName = "James", LastName = "Moore", Email = "james.moore@example.com", Birthdate = new DateTime(1989, 6, 14), Salary = 82000, Password = "pass123" });
             _employees.Add(new Employee { Id = 10, FirstName = "Patricia", LastName = "Taylor", Email = "patricia.taylor@example.com", Birthdate = new DateTime(1991, 12, 8), Salary = 79000, Password = "pass123" });
         }
-        public List<Employee> GetAllEmployees()
+        public async Task<List<Employee>> GetAllEmployees()
         {
+            await Task.Delay(500);
             return _employees;
         }
 
-        public Employee AddNewEmployee(Employee employee)
+        public async Task<Employee> AddNewEmployee(Employee employee)
         {
+            await Task.Delay(500);
             employee.Password = "pass123";
             employee.Id = _employees.Max(e => e.Id) + 1;
             _employees.Add(employee);
             return employee;
         }
 
-        public void DeleteEmployee(int id)
+        public async Task DeleteEmployee(int id)
         {
-            var item = GetEmpolyeeById(id);
+            await Task.Delay(500);
+            var item = await GetEmpolyeeById(id);
             if (item != null)
             {
                 _employees.Remove(item);
             }
         }
 
-        public Employee? GetEmpolyeeById(int id)
+        public async Task<Employee?> GetEmpolyeeById(int id)
         {
+            await Task.Delay(500);
             return _employees.FirstOrDefault(e => e.Id == id);
         }
 
-        public Employee UpdateEmployee(Employee employee)
+        public async Task<Employee>  UpdateEmployee(Employee employee)
         {
             throw new NotImplementedException();
         }
 
-        public List<Employee> Search(string name)
+        public async Task<List<Employee>> Search(string name)
         {
+            await Task.Delay(500);
             var nameLower = name.ToLower();
             var result = _employees.Where(x => $"{x.FirstName}{x.LastName}{x.Email}".ToLower().Contains(nameLower)).ToList();
             return result;

@@ -3,6 +3,7 @@ using EmployeeApp.Dto;
 using EmployeeApp.Dtos;
 using EmployeeApp.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace EmployeeApp.Endpoints
 {
@@ -17,11 +18,12 @@ namespace EmployeeApp.Endpoints
             employeeGroup.MapDelete("{id}", DeleteEmployee);
             //employees -> 1477 (function addess in memory)
             employeeGroup.MapPost("", AddNewEmployee);
-            employeeGroup.MapGet("", GetAll);
+            employeeGroup.MapGet("", GetAll).CacheOutput();
         }
-        static Ok<List<EmployeeDto>> GetAll(IEmployeesRepository employeesRepository)
+        static async Task<Ok<List<EmployeeDto>>> GetAll(IEmployeesRepository employeesRepository, IOutputCacheStore c)
         {
-            var result = employeesRepository.GetAllEmployees();
+            var result = await employeesRepository.GetAllEmployees();
+
             List<EmployeeDto> list = new List<EmployeeDto>();
             foreach (var emp in result)
             {
@@ -39,26 +41,26 @@ namespace EmployeeApp.Endpoints
             }
             return TypedResults.Ok(list);
         }
-        static Ok DeleteEmployee(int id, IEmployeesRepository employeesRepository)
+        static async Task<Ok> DeleteEmployee(int id, IEmployeesRepository employeesRepository)
         {
-            employeesRepository.DeleteEmployee(id);
+            await employeesRepository.DeleteEmployee(id);
             return TypedResults.Ok();
         }
-        static Ok<List<Employee>> SearchEmployee(string term, IEmployeesRepository employeesRepository)
+        static async Task<Ok<List<Employee>>> SearchEmployee(string term, IEmployeesRepository employeesRepository)
         {
-            var res = employeesRepository.Search(term);
+            var res = await employeesRepository.Search(term);
             return TypedResults.Ok(res);
         }
-        static Results<NotFound<string>, Ok<Employee>> GetEmployeeById(int id, IEmployeesRepository employeesRepository)
+        static async Task<Results<NotFound<string>, Ok<Employee>>> GetEmployeeById(int id, IEmployeesRepository employeesRepository)
         {
-            var result = employeesRepository.GetEmpolyeeById(id);
+            var result = await employeesRepository.GetEmpolyeeById(id);
             if (result is not null)
             {
                 return TypedResults.Ok(result); // status code 200
             }
             return TypedResults.NotFound("Employee with id " + id + " not found"); // status code 404
         }
-        static Created<Employee> AddNewEmployee(CreateEmployeeRequestDto request, IEmployeesRepository employeesRepository)
+        static async Task<Created<Employee>> AddNewEmployee(CreateEmployeeRequestDto request, IEmployeesRepository employeesRepository)
         {
             var employee = new EmployeeApp.Models.Employee()
             {
@@ -68,7 +70,7 @@ namespace EmployeeApp.Endpoints
                 Salary = request.Salary,
                 Email = request.Email
             };
-            var result = employeesRepository.AddNewEmployee(employee);
+            var result = await employeesRepository.AddNewEmployee(employee);
             return TypedResults.Created("employees/" + result.Id, result); // sucess - 201
         }
     }
@@ -77,6 +79,8 @@ namespace EmployeeApp.Endpoints
 // Real implemenation
 // Middleware
 // BFF
+
+//async method Task, Task<>, ValueTask, ValueTask<>
 
 
 // Configuartion

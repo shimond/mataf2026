@@ -5,7 +5,7 @@ using EmployeeApp.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
-
+builder.Services.AddOutputCache(); // default for in memory cache
 builder.Services.AddScoped<IEmployeesRepository, InMemoryEmployeeRepository>();
 //builder.Services.AddSingleton<IEmployeesRepository, InMemoryEmployeeRepository>();
 //builder.Services.AddTransient<IEmployeesRepository, InMemoryEmployeeRepository>();
@@ -31,13 +31,21 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
 var app = builder.Build();
 
+app.UseStaticFiles();
+app.UseOutputCache();
 app.MapControllers();
 
 // Enable OpenAPI endpoint
 app.MapOpenApi();
-
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("x-frame-options", "denied");
+    await next();
+});
 // Enable Swagger UI
 app.UseSwagger();
 app.UseSwaggerUI();
