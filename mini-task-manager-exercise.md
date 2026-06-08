@@ -128,6 +128,64 @@ Returns:
 
 ---
 
+# Implementation Requirements
+
+## 1. Use Only Task Methods
+
+All endpoint handlers must return `Task` or `Task<T>`. Handlers should be declared as async methods.
+
+Example:
+```csharp
+public async Task<IResult> CreateTask(CreateTaskDto dto, ITaskService service)
+{
+    // implementation
+}
+```
+
+## 2. Use Only TypedResults
+
+All responses must use `TypedResults` helpers:
+- `TypedResults.Ok()`
+- `TypedResults.Created()`
+- `TypedResults.BadRequest()`
+- `TypedResults.NotFound()`
+- `TypedResults.Conflict()`
+
+Example:
+```csharp
+return TypedResults.Ok(tasks);
+return TypedResults.Created($"/tasks/{task.Id}", task);
+return TypedResults.BadRequest(new { error = "Task cannot move from New to Done" });
+```
+
+## 3. Controller Implementation for Practice
+
+Implement at least one endpoint operation in a **Controller** class (in addition to MinimalApi endpoints). This controller should:
+- Use dependency injection for services
+- Follow the same validation and business logic rules
+- Return `TypedResults` responses
+- Be async
+
+Example:
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class TasksController : ControllerBase
+{
+    private readonly ITaskService _service;
+    
+    public TasksController(ITaskService service) => _service = service;
+    
+    [HttpPost("{id}/complete")]
+    public async Task<IResult> CompleteTask(int id)
+    {
+        // implementation using TypedResults
+    }
+}
+```
+
+---
+
 # Suggested Structure
 
 ```text
@@ -135,6 +193,7 @@ Endpoints/
 Services/
 Models/
 DTOs/
+Controllers/
 ```
 
 ---
@@ -203,3 +262,44 @@ Beginner → Intermediate
 Estimated time:
 
 60–90 minutes
+
+
+# Sql scripts
+CREATE TABLE Priorities (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Insert priority values
+INSERT INTO Priorities (Name) VALUES 
+    ('Low'),
+    ('Medium'),
+    ('High');
+
+-- Create TaskStatuses lookup table
+CREATE TABLE TaskStatuses (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Insert status values
+INSERT INTO TaskStatuses (Name) VALUES 
+    ('New'),
+    ('InProgress'),
+    ('Done');
+
+-- Create Tasks table
+CREATE TABLE Tasks (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Title NVARCHAR(200) NOT NULL,
+    Description NVARCHAR(MAX),
+    PriorityId INT NOT NULL,
+    StatusId INT NOT NULL DEFAULT 1, -- Default to 'New'
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    UpdatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    
+    CONSTRAINT FK_Tasks_Priority FOREIGN KEY (PriorityId) 
+        REFERENCES Priorities(Id),
+    CONSTRAINT FK_Tasks_Status FOREIGN KEY (StatusId) 
+        REFERENCES TaskStatuses(Id)
+);
